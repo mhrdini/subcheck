@@ -43,10 +43,10 @@ const Tabs: React.FC<TabsProps> = ({ options, onTabSelect }) => {
             </div>
             <div className={`rounded-2xl bg-gray-200 h-0.5`}>
               <div
-                className={`rounded-2xl bg-skin-accent-primary h-full w-1/${options.length} transition-transform transform duration-300`}
-                style={{
-                  '--tw-translate-x': `${selectedIndex * 100}%`
-                }}
+                className={`rounded-2xl bg-skin-accent-primary h-full w-1/${options.length} transition-transform transform duration-300 translate-x-full-${selectedIndex}`}
+                // style={{
+                //   '--tw-translate-x': `${selectedIndex * 100}%`
+                // }}
               />
             </div>
           </div>

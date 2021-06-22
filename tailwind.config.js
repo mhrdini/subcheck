@@ -8,7 +8,6 @@
 // }
 
 module.exports = {
-  // mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -29,7 +28,19 @@ module.exports = {
           'accent-primary': 'var(--color-accent-primary)',
           'accent-secondary': 'var(--color-accent-secondary)'
         }
-      }
+      },
+      translate: (theme, { negative }) => ({
+        ...theme('spacing'),
+        ...negative(theme('spacing')),
+        'full-1': '100%',
+        '-full-1': '-100%',
+        'full-2': '200%',
+        '-full-2': '-200%',
+        'full-3': '300%',
+        '-full-3': '-300%',
+        'full-4': '400%',
+        '-full-4': '-400%'
+      })
     }
   },
   variants: {
