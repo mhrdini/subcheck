@@ -13,9 +13,9 @@ import {
   CalendarIcon
 } from '@heroicons/react/outline'
 
-import { fetchSubjectPage } from '../data/unimelbHandbook'
-import { SubjectData, TabOption } from '../types'
-import Tabs from '../components/Tabs'
+import { fetchSubjectPage } from '../../data/unimelbHandbook'
+import { SubjectData, TabOption } from '../../types'
+import Tabs from '../../components/Tabs'
 
 const options: TabOption[] = [
   { label: 'overview', icon: <BookOpenIcon className='w-5 h-5' /> },
@@ -24,6 +24,7 @@ const options: TabOption[] = [
   { label: 'dates & times', icon: <CalendarIcon className='w-5 h-5' /> }
 ]
 
+// TODO: Fix flashing to / page when rendering a /subjects/[code] page
 const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const overviewRef = useRef<HTMLDivElement>(null)
   const eligibilityRef = useRef<HTMLDivElement>(null)
@@ -37,12 +38,14 @@ const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
     if (datesRef.current) datesRef.current.innerHTML = data.dates
   }, [overviewRef.current, eligibilityRef.current, assessmentRef.current, datesRef.current])
 
+  // Corresponds to a specific tab in the UniMelb subject page handbook
   const [tabLabel, setTabLabel] = useState(options[0].label)
 
   const onTabSelect = (tabLabel: string) => {
     setTabLabel(tabLabel)
   }
 
+  // To render the HTML of the section that corresponds to the currently selected tab
   const getTabDivRef = () => {
     switch (tabLabel) {
       case options[0].label:

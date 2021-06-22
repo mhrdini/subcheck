@@ -27,7 +27,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Subcheck</title>
       </Head>
       <div>
-        <Header />
+        {/* Sticky Header to ensure it is always visible as we scroll down */}
+        <Header className='sticky' />
         <div className='relative'>
           <Component {...pageProps} />
         </div>

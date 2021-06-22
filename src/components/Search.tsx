@@ -70,7 +70,7 @@ const Search = () => {
           </button>
         </Link>
         <span className='absolute inset-y-0 left-16 flex items-center pl-2'>
-          <Link href={`/${valueRef.current.toLowerCase()}`}>
+          <Link href={`/subjects/${valueRef.current.toLowerCase()}`}>
             <button
               aria-label='search bar button'
               id='searchButton'
