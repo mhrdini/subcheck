@@ -1,0 +1,145 @@
+/* ./styles/globals.css */
+/* @import './unimelb-handbook.css'; */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    background: #f1f3f5;
+    --color-fill: #f1f3f5;
+    --color-fill-muted: #c2c9cf;
+
+    --color-accent-primary: #5c9eff;
+    --color-accent-secondary: #b981d7;
+
+    --color-text-base: #323333;
+    --color-text-muted: #556677;
+  }
+
+  .mobile-wrap {
+    @apply p-5 py-2 cursor-default;
+
+    & h2 {
+      @apply text-skin my-4 font-semibold tracking-wider text-2xl;
+    }
+
+    & br {
+      @apply hidden;
+    }
+
+    & h3 {
+      @apply text-skin-muted my-2 font-semibold tracking-wide;
+    }
+
+    & p,
+    ul {
+      @apply text-skin my-1 text-sm font-light leading-relaxed pb-5;
+    }
+
+    & p > strong {
+      @apply text-skin-muted my-2 font-medium tracking-wide;
+    }
+
+    & ul {
+      @apply list-disc px-6 space-y-3;
+
+      &.accordion {
+        @apply list-none px-0;
+      }
+    }
+
+    & > .course__prev-next-buttons,
+    .last-updated {
+      @apply hidden;
+    }
+
+    & a {
+      @apply text-skin-accent-primary underline hover:no-underline;
+    }
+
+    & .course__overview-box {
+      @apply pb-2;
+
+      & td > a {
+        @apply pointer-events-auto text-skin-accent-primary underline hover:no-underline;
+      }
+    }
+
+    & table {
+      @apply border-collapse min-w-full w-full table-auto pointer-events-none;
+
+      & > thead {
+        @apply hidden sm:table-header-group;
+      }
+
+      & > thead > tr {
+        @apply bg-gray-200 text-gray-600 uppercase text-sm leading-normal;
+      }
+
+      & > thead > tr > th {
+        @apply py-3 px-6 text-left;
+      }
+
+      & > tbody {
+        @apply text-gray-600 text-sm font-light;
+      }
+
+      & > tbody > tr {
+        @apply border-b border-t border-gray-200 hover:bg-gray-100 py-2;
+
+        &.responsive {
+          @apply block sm:table-row;
+
+          & [data-label='timing'],
+          [data-label='percentage'] {
+            @apply text-center;
+          }
+        }
+      }
+
+      & > tbody > tr > td {
+        @apply py-3 text-left leading-relaxed px-2;
+
+        &.responsive {
+          @apply block sm:table-cell;
+        }
+      }
+
+      & > tbody > tr > td > a {
+        @apply text-gray-600 no-underline;
+      }
+
+      & td:before {
+        @apply block capitalize text-skin-accent-primary tracking-wider font-medium text-sm sm:hidden;
+        content: attr(data-label);
+      }
+    }
+
+    .accordion {
+      & > li > .accordion__title {
+        @apply py-3 font-semibold text-lg tracking-wide;
+      }
+    }
+  }
+}
+
+@layer components {
+  .neu-flat {
+    /* background: #f1f3f5; */
+    box-shadow: 13px 13px 26px #eaecee, -13px -13px 26px #f8fafc;
+  }
+
+  .neu-inset {
+    box-shadow: inset 20px 20px 54px #e7e9eb, inset -20px -20px 54px #fbfdff;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+}
