@@ -1,3 +1,4 @@
 import { fetchSubjectPage } from './unimelbHandbook'
+import unimelbSubjects from './unimelbSubjects'
 
-export default { fetchSubjectPage }
+export { fetchSubjectPage, unimelbSubjects }

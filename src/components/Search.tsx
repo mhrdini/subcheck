@@ -50,36 +50,48 @@ const Search = () => {
 
     if (document.activeElement === searchInputElement && e.key === 'Enter') {
       if (valueRef.current) {
-        let searchButtonElement = document.getElementById('searchButton')
+        // let searchButtonElement = document.getElementById('searchButton')
 
         document.getElementById('searchInput').blur()
+
+        const subjectCode = valueRef.current.toLowerCase()
+
         valueRef.current = ''
         setValue('')
 
-        searchButtonElement.click()
+        window.location.href = '/subjects/' + subjectCode
+
+        // searchButtonElement.click()
       }
     }
+  }
+
+  const goHome = () => {
+    window.location.href = '/'
   }
 
   return (
     <form>
       <div className='relative text-left text-gray-300 focus-within:text-skin-muted transition-colors'>
-        <Link href='/'>
-          <button className='absolute inset-y-0 left-0 transition-colors text-skin-muted hover:text-skin-accent-primary flex items-center pl-7 focus:outline-none'>
-            <HomeIcon className='h-5 w-5' />
-          </button>
-        </Link>
+        {/* <Link href='/'> */}
+        <div
+          onClick={goHome}
+          className='absolute inset-y-0 left-0 transition-colors text-skin-muted hover:text-skin-accent-primary flex items-center pl-7 focus:outline-none'
+        >
+          <HomeIcon className='h-5 w-5' />
+        </div>
+        {/* </Link> */}
         <span className='absolute inset-y-0 left-16 flex items-center pl-2'>
-          <Link href={`/subjects/${valueRef.current.toLowerCase()}`}>
+          {/* <Link href={`/subjects/${valueRef.current.toLowerCase()}`}>
             <button
               aria-label='search bar button'
               id='searchButton'
               type='submit'
               className='pointer-events-none'
-            >
-              <SearchIcon className='h-5 w-5' />
-            </button>
-          </Link>
+            > */}
+          <SearchIcon className='h-5 w-5' />
+          {/* </button>
+          </Link> */}
         </span>
         <input
           aria-label='search bar input'

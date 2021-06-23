@@ -9,6 +9,9 @@ interface TabsProps {
 }
 
 const Tabs: React.FC<TabsProps> = ({ options, onTabSelect }) => {
+  // TODO: Optimise for prod - https://tailwindcss.com/docs/optimizing-for-production
+  // FIXME: JIT not working
+
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState<TabOption>(options ? options[0] : null)
 

@@ -9,7 +9,10 @@
 
 module.exports = {
   // mode: 'jit',
-  purge: ['./src/components/**/*.{js,ts,jsx,tsx}', './src/pages/**/*.{js,ts,jsx,tsx}'],
+  purge: {
+    content: ['./src/components/**/*.{js,ts,jsx,tsx}', './src/pages/**/*.{js,ts,jsx,tsx}'],
+    safelist: [/^(translate-x-full-)/, /^(grid-cols)/, /^(w-1\/)/]
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {

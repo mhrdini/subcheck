@@ -34,7 +34,8 @@
     }
 
     & p,
-    ul {
+    ul,
+    ol {
       @apply text-skin my-1 text-sm font-light leading-relaxed pb-5;
     }
 
@@ -48,6 +49,10 @@
       &.accordion {
         @apply list-none px-0;
       }
+    }
+
+    & ol {
+      @apply list-decimal px-6 space-y-3;
     }
 
     & > .course__prev-next-buttons,

@@ -1,7 +1,6 @@
-import { Node } from 'node-html-parser'
-
 type ParsedHTML = string
 interface SubjectData {
+  name?: string
   code: string
   overview: ParsedHTML
   eligibility: ParsedHTML
