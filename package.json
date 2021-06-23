@@ -9,18 +9,25 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.2.0",
+    "@heroicons/react": "^1.0.1",
+    "@types/jsdom": "^16.2.11",
+    "axios": "^0.21.1",
+    "jsdom": "^16.6.0",
     "next": "latest",
-    "parse5": "^6.0.1",
+    "node-html-parser": "^3.3.5",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-preset-env": "^6.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@types/node": "^15.12.1",
-    "@types/parse5": "^6.0.0",
     "@types/react": "^17.0.9",
     "autoprefixer": "^10.2.6",
-    "postcss": "^8.3.4",
-    "tailwindcss": "^2.1.4",
+    "postcss": "^8.3.5",
+    "tailwindcss": "^2.2.0",
     "typescript": "^4.3.2"
   }
 }
