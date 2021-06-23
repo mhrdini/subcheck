@@ -62,7 +62,7 @@ const Tabs: React.FC<TabsProps> = ({ options, onTabSelect }) => {
                     className={`relative w-full py-4 pl-10 pr-4 text-left 
                       text-skin-muted
                       ${!open && 'hover:text-skin hover:underline'} 
-                      rounded-lg cursor-default 
+                      rounded-lg
                       focus:outline-none 
                       focus-visible:ring-2 
                       focus-visible:ring-opacity-75 
@@ -101,7 +101,7 @@ const Tabs: React.FC<TabsProps> = ({ options, onTabSelect }) => {
                         className={({ selected, active }) =>
                           `${selected && 'hidden'}
                             ${active ? 'bg-skin-accent-primary text-white' : 'text-skin'}
-                            cursor-default select-none relative py-2 pl-10 pr-4`
+                            cursor-pointer select-none relative py-2 pl-10 pr-4`
                         }
                         value={option}
                       >

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import '../../styles/globals.css'
+import '../styles/globals.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
@@ -13,7 +13,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
 
   useEffect(() => {
-    console.log('Loaded')
     window.addEventListener('keyup', onKeyUp)
 
     return () => {

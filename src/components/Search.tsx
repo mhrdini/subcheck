@@ -1,21 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { HomeIcon } from '@heroicons/react/solid'
 import { SearchIcon } from '@heroicons/react/outline'
-import Link from 'next/link'
+import { useRouter } from 'next/dist/client/router'
+import Spinner from './Spinner'
 
 const alphanumericRegex = new RegExp('^[a-zA-Z0-9]+$')
 
 const Search = () => {
   const [value, setValue] = useState('')
+  const [loading, setLoading] = useState(false)
   const valueRef = useRef(value)
+  const router = useRouter()
 
+  // Setting the input field value to ""
+  // Event listeners for when:
+  // - User starts typing
+  // - Route starts to change
+  // - Route finishes changing
   useEffect(() => {
-    setValue('')
+    const handleRouteChangeStart = () => {
+      setLoading(true)
+    }
 
+    const handleRouteChangeComplete = () => {
+      setLoading(false)
+      valueRef.current = ''
+      setValue('')
+    }
+
+    setValue('')
     window.addEventListener('keyup', onKeyUp)
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+    router.events.on('routeChangeComplete', handleRouteChangeComplete)
 
     return () => {
       window.removeEventListener('keyup', onKeyUp)
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+      router.events.off('routeChangeComplete', handleRouteChangeComplete)
     }
   }, [])
 
@@ -46,57 +67,64 @@ const Search = () => {
   }
 
   const handleSubmit: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     let searchInputElement = document.getElementById('searchInput')
 
     if (document.activeElement === searchInputElement && e.key === 'Enter') {
       if (valueRef.current) {
-        // let searchButtonElement = document.getElementById('searchButton')
-
         document.getElementById('searchInput').blur()
+        // const subjectCode = valueRef.current.toLowerCase()
 
-        const subjectCode = valueRef.current.toLowerCase()
+        // valueRef.current = ''
+        // setValue('')
 
-        valueRef.current = ''
-        setValue('')
+        // const url = '/subjects/' + subjectCode
+        // window.location.href = url
 
-        window.location.href = '/subjects/' + subjectCode
+        // router.push('/subjects/[code]', `/subjects/${subjectCode}`)
 
-        // searchButtonElement.click()
+        let searchButtonElement = document.getElementById('searchButton')
+        searchButtonElement.click()
       }
     }
   }
 
-  const goHome = () => {
-    window.location.href = '/'
+  const goHome: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    router.push('/')
+  }
+
+  const goToSubject: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const subjectCode = valueRef.current.toLowerCase()
+    router.push('/subjects/[code]', `/subjects/${subjectCode}`)
   }
 
   return (
     <form>
       <div className='relative text-left text-gray-300 focus-within:text-skin-muted transition-colors'>
-        {/* <Link href='/'> */}
         <div
           onClick={goHome}
-          className='absolute inset-y-0 left-0 transition-colors text-skin-muted hover:text-skin-accent-primary flex items-center pl-7 focus:outline-none'
+          className='absolute inset-y-0 left-0 flex items-center pl-7 transition-colors text-skin-muted hover:text-skin-accent-primary focus:outline-none'
         >
           <HomeIcon className='h-5 w-5' />
         </div>
-        {/* </Link> */}
-        <span className='absolute inset-y-0 left-16 flex items-center pl-2'>
-          {/* <Link href={`/subjects/${valueRef.current.toLowerCase()}`}>
-            <button
-              aria-label='search bar button'
-              id='searchButton'
-              type='submit'
-              className='pointer-events-none'
-            > */}
-          <SearchIcon className='h-5 w-5' />
-          {/* </button>
-          </Link> */}
-        </span>
+        <div className='absolute inset-y-0 left-16 flex justify-center items-center pl-2 pointer-events-none'>
+          <button id='searchButton' onClick={goToSubject}>
+            <SearchIcon className='h-5 w-5' />
+          </button>
+        </div>
         <input
           aria-label='search bar input'
           id='searchInput'
           type='text'
+          disabled={loading}
           value={value}
           onChange={handleChange}
           onKeyUp={handleSubmit}
@@ -107,6 +135,9 @@ const Search = () => {
             font-light tracking-wide text-skin-muted bg-gray-100
             focus:outline-none focus:bg-gray-50`}
         ></input>
+        <div className='absolute inset-y-0 right-0 pr-7 flex items-center'>
+          {loading && <Spinner size={6} />}
+        </div>
       </div>
     </form>
   )

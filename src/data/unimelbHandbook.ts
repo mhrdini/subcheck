@@ -9,12 +9,10 @@ import { JSDOM } from 'jsdom'
 // Otherwise, return null
 export const fetchSubjectPage = async (subjectCode: string): Promise<SubjectData> => {
   // Check if the subject exists and retrieve the HTML string for the Overview section if it does
-  const overview = await getSectionDivString(
-    `https://handbook.unimelb.edu.au/subjects/${subjectCode}`
-  )
+  const { name, overview } = await getOverviewAndName(subjectCode)
 
   // If the url returns a 404 page, null is returned to indicate that the subject does not exist
-  if (!overview) {
+  if (!name) {
     return null
   }
 
@@ -33,6 +31,7 @@ export const fetchSubjectPage = async (subjectCode: string): Promise<SubjectData
   )
 
   const subjectData: SubjectData = {
+    name,
     code: subjectCode,
     overview,
     eligibility,
@@ -41,6 +40,30 @@ export const fetchSubjectPage = async (subjectCode: string): Promise<SubjectData
   }
 
   return subjectData
+}
+
+const getOverviewAndName = async (subjectCode: string) => {
+  const response = await fetch(`https://handbook.unimelb.edu.au/subjects/${subjectCode}`)
+
+  if (response.url.endsWith('404')) return { name: null, overview: null }
+
+  // Get the HTML string of the entire page via the URL
+  const body = await response.text()
+
+  // Parses the HTML string to retrieve the specific element that encapsulates the section
+  // Need to update if the HTML structure of the subject page in the handbook changes
+  // Alternatively find dynamic solution to immediately retrieve the specific element
+
+  const name =
+    parse(body).childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[1]
+      .childNodes[2].childNodes[1].childNodes[0].innerText
+
+  const overview =
+    parse(
+      body
+    ).childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[4].childNodes[1].childNodes[0].toString()
+
+  return { name, overview }
 }
 
 // Returns the stringified HTML of a subject's handbook section.

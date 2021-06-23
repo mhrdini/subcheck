@@ -1,5 +1,4 @@
 /* ./styles/globals.css */
-/* @import './unimelb-handbook.css'; */
 
 @tailwind base;
 @tailwind components;
@@ -12,17 +11,27 @@
     --color-fill-muted: #c2c9cf;
 
     --color-accent-primary: #5c9eff;
-    --color-accent-secondary: #b981d7;
+    --color-accent-primary-light: #72afff;
+    --color-accent-primary-dark: #508cfc;
+
+    --color-accent-secondary: #9c6fb6;
+    --color-accent-secondary-light: #b799cb;
+    --color-accent-secondary-dark: #8850a6;
+    /* --color-accent-secondary: #ffbe5c;
+    --color-accent-secondary-light: #ffd18a;
+    --color-accent-secondary-dark: #ffa227; */
 
     --color-text-base: #323333;
     --color-text-muted: #556677;
+    --color-text-muted-light: #798899;
+    --color-text-muted-dark: #36404b;
   }
 
   .mobile-wrap {
-    @apply p-5 py-2 cursor-default;
+    @apply p-5 py-2;
 
     & h2 {
-      @apply text-skin my-4 font-semibold tracking-wider text-2xl;
+      @apply text-skin-muted-dark my-4 font-medium tracking-wider text-xl;
     }
 
     & br {
@@ -94,12 +103,18 @@
       & > tbody > tr {
         @apply border-b border-t border-gray-200 hover:bg-gray-100 py-2;
 
-        &.responsive {
-          @apply block sm:table-row;
+        & > th {
+          @apply text-skin-muted tracking-wider font-medium;
+        }
 
-          & [data-label='timing'],
-          [data-label='percentage'] {
-            @apply text-center;
+        &.responsive {
+          @apply block sm:table-row text-left;
+
+          @media (min-width: 640px) {
+            & [data-label='timing'],
+            [data-label='percentage'] {
+              @apply text-center;
+            }
           }
         }
       }
@@ -124,7 +139,7 @@
 
     .accordion {
       & > li > .accordion__title {
-        @apply py-3 font-semibold text-lg tracking-wide;
+        @apply py-3 font-semibold text-lg text-skin-muted-dark tracking-wide;
       }
     }
   }

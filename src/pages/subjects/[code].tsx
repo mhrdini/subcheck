@@ -19,7 +19,6 @@ const options: TabOption[] = [
   { label: 'dates & times', icon: <CalendarIcon className='w-5 h-5' /> }
 ]
 
-// TODO: Fix flashing to / page when rendering a /subjects/[code] page
 const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const overviewRef = useRef<HTMLDivElement>(null)
   const eligibilityRef = useRef<HTMLDivElement>(null)
@@ -61,8 +60,9 @@ const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
   if (router.isFallback) {
     return (
-      <div className='flex justify-center align-center'>
+      <div className='flex justify-center align-center mx-2'>
         <div className='w-full max-w-2xl md:w-3/4 h-screen space-y-5'>
+          <div className='bg-gray-200 animate-pulse rounded-xl h-20'></div>
           <div className='bg-gray-200 animate-pulse rounded-xl h-12'></div>
           <div className='bg-gray-200 animate-pulse rounded-xl h-5/6'></div>
         </div>
@@ -70,13 +70,21 @@ const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
     )
   } else {
     return (
-      <div className='flex justify-center align-center'>
+      <div className='flex justify-center align-center mx-2'>
         <div className='w-full max-w-2xl md:w-3/4 space-y-5'>
+          <div className='px-2 text-center break-words space-y-3'>
+            <div className='text-sm md:text-base text-skin-muted font-medium tracking-widest uppercase cursor-default select-all'>
+              {data.code}
+            </div>
+            <div className='text-xl md:text-2xl text-skin-muted-dark font-thin tracking-extrawide uppercase cursor-default'>
+              {data.name}
+            </div>
+            <hr />
+          </div>
           <Tabs options={options} onTabSelect={onTabSelect} />
-          <div
-            className='neu-flat rounded-none px-0 pt-1 sm:rounded-lg sm:px-4'
-            ref={getTabDivRef()}
-          ></div>
+          <div className='neu-flat rounded-none px-0 sm:rounded-lg sm:px-3'>
+            <div ref={getTabDivRef()}></div>
+          </div>
         </div>
       </div>
     )

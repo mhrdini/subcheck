@@ -1,6 +1,6 @@
 type ParsedHTML = string
 interface SubjectData {
-  name?: string
+  name: string
   code: string
   overview: ParsedHTML
   eligibility: ParsedHTML

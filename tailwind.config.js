@@ -11,7 +11,7 @@ module.exports = {
   // mode: 'jit',
   purge: {
     content: ['./src/components/**/*.{js,ts,jsx,tsx}', './src/pages/**/*.{js,ts,jsx,tsx}'],
-    safelist: [/^(translate-x-full-)/, /^(grid-cols)/, /^(w-1\/)/]
+    safelist: [/^(translate-x-full-)/, /^(grid-cols)/, /^(w-1\/)/, /^(h-)/]
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -21,18 +21,36 @@ module.exports = {
           DEFAULT: 'var(--color-fill)',
           muted: 'var(--color-fill-muted)',
           'accent-primary': 'var(--color-accent-primary)',
-          'accent-secondary': 'var(--color-accent-secondary)'
+          'accent-primary-light': 'var(--color-accent-primary-light)',
+          'accent-primary-dark': 'var(--color-accent-primary-dark)',
+          'accent-secondary': 'var(--color-accent-secondary-light)',
+          'accent-secondary-light': 'var(--color-accent-secondary-light)',
+          'accent-secondary-dark': 'var(--color-accent-secondary-dark)'
         }
       },
       textColor: {
         skin: {
           DEFAULT: 'var(--color-text-base)',
           muted: 'var(--color-text-muted)',
+          'muted-light': 'var(--color-text-muted-light)',
+          'muted-dark': 'var(--color-text-muted-dark)',
 
-          'accent-primary': 'var(--color-accent-primary)',
-          'accent-secondary': 'var(--color-accent-secondary)'
+          'accent-primary': 'var(--color-accent-primary)'
+          // 'accent-primary-light': 'var(--color-accent-primary-light)',
+          // 'accent-primary-dark': 'var(--color-accent-primary-dark)',
+          // 'accent-secondary': 'var(--color-accent-secondary-light)',
+          // 'accent-secondary-light': 'var(--color-accent-secondary-light)',
+          // 'accent-secondary-dark': 'var(--color-accent-secondary-dark)'
         }
       },
+      // gradientColorStops: (theme) => ({
+      //   'accent-primary': 'var(--color-accent-primary)',
+      //   'accent-primary-light': 'var(--color-accent-primary-light)',
+      //   'accent-primary-dark': 'var(--color-accent-primary-dark)',
+      //   'accent-secondary': 'var(--color-accent-secondary-light)',
+      //   'accent-secondary-light': 'var(--color-accent-secondary-light)',
+      //   'accent-secondary-dark': 'var(--color-accent-secondary-dark)'
+      // }),
       translate: (theme, { negative }) => ({
         ...theme('spacing'),
         ...negative(theme('spacing')),
@@ -44,7 +62,10 @@ module.exports = {
         '-full-3': '-300%',
         'full-4': '400%',
         '-full-4': '-400%'
-      })
+      }),
+      letterSpacing: {
+        extrawide: '0.15em'
+      }
     }
   },
   variants: {
