@@ -1,5 +1,6 @@
 import { parse } from 'node-html-parser'
-import { SubjectData } from '../types'
+import { parse as parse5 } from 'parse5'
+import { StudyPeriodData, SubjectData } from '../types'
 import { JSDOM } from 'jsdom'
 
 // For each section in the subject handbook page for an input subject code,
@@ -8,62 +9,68 @@ import { JSDOM } from 'jsdom'
 // If subject exists, return a SubjectData object
 // Otherwise, return null
 export const fetchSubjectPage = async (subjectCode: string): Promise<SubjectData> => {
-  // Check if the subject exists and retrieve the HTML string for the Overview section if it does
-  const { name, overview } = await getOverviewAndName(subjectCode)
+  const response = await (
+    await fetch(`https://handbook.unimelb.edu.au/subjects/${subjectCode}/print`)
+  ).text()
 
-  // If the url returns a 404 page, null is returned to indicate that the subject does not exist
-  if (!name) {
+  const subjectName =
+    parse(response).childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[0]
+      .childNodes[1].childNodes[2].childNodes[1].childNodes[0].innerText
+
+  if (!subjectName) {
     return null
   }
 
-  // Ensures that the tables in the returned HTML string are responsive
-  const eligibility = processEligibilitySection(
-    await getSectionDivString(
-      `https://handbook.unimelb.edu.au/subjects/${subjectCode}/eligibility-and-requirements`
-    )
-  )
-  const assessment = processAssessmentSection(
-    await getSectionDivString(`https://handbook.unimelb.edu.au/subjects/${subjectCode}/assessment`)
-  )
+  const mainDiv =
+    parse(response).childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[0]
+      .childNodes[4].childNodes[1].childNodes[0].childNodes[0]
 
-  const dates = await getSectionDivString(
-    `https://handbook.unimelb.edu.au/subjects/${subjectCode}/dates-times`
-  )
-
-  const subjectData: SubjectData = {
-    name,
-    code: subjectCode,
-    overview,
-    eligibility,
-    assessment,
-    dates
+  let rawSubjectData = {
+    overview: parse('') as unknown as HTMLElement,
+    eligibility: parse('') as unknown as HTMLElement,
+    assessment: parse('') as unknown as HTMLElement,
+    dates: parse('') as unknown as HTMLElement
   }
 
+  let numberOfH2s = 0
+
+  for (const childNode of Array.from(mainDiv.childNodes)) {
+    const node = childNode as unknown as HTMLElement
+
+    if (node.tagName === 'H2') numberOfH2s += 1
+
+    switch (numberOfH2s) {
+      case 1:
+        rawSubjectData.overview.appendChild(node)
+        break
+      case 2:
+        rawSubjectData.eligibility.appendChild(node)
+        break
+      case 3:
+        rawSubjectData.assessment.appendChild(node)
+        break
+      case 4:
+        rawSubjectData.dates.appendChild(node)
+        break
+    }
+  }
+
+  const subjectData: SubjectData = {
+    name: subjectName,
+    code: subjectCode,
+    overview: rawSubjectData.overview.outerHTML,
+    eligibility: processEligibilitySection(rawSubjectData.eligibility.outerHTML),
+    assessment: processAssessmentSection(rawSubjectData.assessment.outerHTML),
+    dates: rawSubjectData.dates.outerHTML,
+    overviewData: getOverviewData(rawSubjectData.overview),
+    eligibilityData: getEligibilityData(rawSubjectData.eligibility),
+    assessmentData: getAssessmentData(rawSubjectData.assessment),
+    datesData: getDatesData(rawSubjectData.dates)
+  }
+
+  console.dir(subjectData.datesData, { depth: null })
+
   return subjectData
-}
-
-const getOverviewAndName = async (subjectCode: string) => {
-  const response = await fetch(`https://handbook.unimelb.edu.au/subjects/${subjectCode}`)
-
-  if (response.url.endsWith('404')) return { name: null, overview: null }
-
-  // Get the HTML string of the entire page via the URL
-  const body = await response.text()
-
-  // Parses the HTML string to retrieve the specific element that encapsulates the section
-  // Need to update if the HTML structure of the subject page in the handbook changes
-  // Alternatively find dynamic solution to immediately retrieve the specific element
-
-  const name =
-    parse(body).childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[1]
-      .childNodes[2].childNodes[1].childNodes[0].innerText
-
-  const overview =
-    parse(
-      body
-    ).childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[0].childNodes[4].childNodes[1].childNodes[0].toString()
-
-  return { name, overview }
 }
 
 // Returns the stringified HTML of a subject's handbook section.
@@ -93,10 +100,10 @@ const RESPONSIVE_CLASS = 'responsive'
 // The different columns for tables in the "Eligibility and Requirements" and "Assessment" pages
 const ELIGIBILITY_COLUMNS = ['code', 'name', 'teaching period', 'credit points']
 const ELIGIBILITY_LENGTH = ELIGIBILITY_COLUMNS.length
-
 const ASSESSMENT_COLUMNS = ['description', 'timing', 'percentage']
 const ASSESSMENT_LENGTH = ASSESSMENT_COLUMNS.length
 
+// Adds necessary responsive attributes to each row and cells of tables in the Eligibility section
 function processEligibilitySection(sectionString: string) {
   let eligibilitySection = new JSDOM(sectionString)
 
@@ -122,6 +129,7 @@ function processEligibilitySection(sectionString: string) {
   return newSection
 }
 
+// Adds necessary responsive attributes to each row and cells of tables in the Assessment section
 function processAssessmentSection(sectionString: string) {
   let assessmentSection = new JSDOM(sectionString)
 
@@ -145,4 +153,68 @@ function processAssessmentSection(sectionString: string) {
   let newSection = assessmentSection.serialize()
 
   return newSection
+}
+
+function getOverviewData(overview: HTMLElement): Object {
+  const courseOverviewRows = Array.from(overview.querySelectorAll('tr'))
+  let availability = []
+
+  for (const row of courseOverviewRows) {
+    if (row.childNodes.length && row.firstChild.textContent === 'Availability') {
+      availability = Array.from(row.childNodes[1].childNodes).map((divNode) => divNode.textContent)
+    }
+  }
+  return { availability }
+}
+function getEligibilityData(eligibility: HTMLElement): Object {
+  return {}
+}
+
+function getAssessmentData(assessment: HTMLElement): Object {
+  return {}
+}
+
+function getDatesData(dates: HTMLElement): Object {
+  const studyPeriods = Array.from(dates.querySelectorAll('li')).map((period) => {
+    // Get the name of the study period
+    const studyPeriod = period.firstChild.textContent
+
+    let studyPeriodDetails: StudyPeriodData = { studyPeriod }
+
+    // Get the list of study period details, extracting the name of the detail and its value
+    const studyPeriodRows = Array.from(period.querySelectorAll('tr'))
+
+    for (const detailRow of studyPeriodRows) {
+      const detailName = detailRow.firstChild.textContent
+      const detailValue = detailRow.lastChild.textContent
+
+      studyPeriodDetails = { ...studyPeriodDetails, [toCamelCase(detailName)]: detailValue }
+    }
+
+    // Get the contact emails for the study period
+    const contactEmails = extractEmails(
+      period.querySelector('.course__body__inner__contact_details').innerHTML
+    )
+
+    studyPeriodDetails = { ...studyPeriodDetails, contactEmails }
+
+    return studyPeriodDetails
+  })
+
+  return { studyPeriods }
+}
+
+// Retrieved from https://stackoverflow.com/a/24916356
+const toCamelCase = function (string: string) {
+  const nonDashString = string.replace('-', ' ')
+
+  return nonDashString
+    .replace(/(?:^.|[A-Z]|\b.)/g, function (letter, index) {
+      return index == 0 ? letter.toLowerCase() : letter.toUpperCase()
+    })
+    .replace(/\s+/g, '')
+}
+
+const extractEmails = (text: string) => {
+  return Array.from(new Set(text.match(/([a-zA-Z0-9+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)))
 }

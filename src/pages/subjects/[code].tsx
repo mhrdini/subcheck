@@ -83,7 +83,7 @@ const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
           </div>
           <Tabs options={options} onTabSelect={onTabSelect} />
           <div className='neu-flat rounded-none px-0 sm:rounded-lg sm:px-3'>
-            <div ref={getTabDivRef()}></div>
+            <div className='mobile-wrap' ref={getTabDivRef()}></div>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ const Subject = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
 // This function gets called at build time
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = unimelbSubjects
-    .slice(0, 51)
+    .slice(0, 1)
     .map((subjectCode) => ({ params: { code: subjectCode } }))
 
   // const paths = [{ params: { code: 'comp10001' } }, { params: { code: 'comp10002' } }]
